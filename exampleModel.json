@@ -1,0 +1,26 @@
+{
+    "username" : "./api/api/",
+    "projects": [ 
+        {
+            "id": 1,
+            "description": "This is MY Product i want to see if people may want",
+            "mediaList": [],
+            "wants": 0
+        }, 
+        {
+            "id": 2,
+            "description": "This is MY other Product i want to see if people may want",
+            "mediaList": [],
+            "wants": 0
+        } 
+    ],
+    "myWants": [
+        {
+            "id": 1,
+            "description": "This is MY Product i want to see if people may want",
+            "mediaList": [],
+            "wants": 0
+
+        }
+    ]
+}
