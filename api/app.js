@@ -40,18 +40,26 @@ function hashPassword(password, salt) {
   return hash
 }
 
-passport.use(new LocalStrategy(function(username, password, done){
-  db.get('SELECT salt FROM users WHERE username = ?', username, function(err, row) {
-    if (!row) return done(null, false);
-    var hash = hashPassword(password, row.salt);
-    db.get('SELECT username, id FROM users WHERE username = ? AND password = ?', username, hash, function(err, row) {
-      if (!row) return done(null, false);
-      return done(null, row);
-    });
-  });
+passport.use(new LocalStrategy((username, password, done) => {
+  // db.get('SELECT salt FROM users WHERE username = ?', username, function(err, row) {
+  //   if (!row) return done(null, false);
+  //   var hash = hashPassword(password, 10);
+  //   db.get('SELECT username, id FROM users WHERE username = ? AND password = ?', username, hash, function(err, row) {
+  //     if (!row) return done(null, false);
+  //     return done(null, row);
+  //   });
+  // });
+  User.findOne({where: {'username': username}}).then( (userResponce) => {
+    if(bcrypt.compareSync(password,userResponce.password)){
+      done(null, userResponce)
+    }else{
+      done(null, false)
+    }
+  })
 }))
 passport.use('local-signup', new LocalStrategy({passReqToCallback : true}, (req, username, password, done) => {
 
+  // TODO add failure conditions like if variable not found and missing keys
   // find a user whose email is the same as the forms email
   // we are checking to see if the user trying to login already exists
   User.findOne({ where: { 'username' :  username }}).then( async (userResponce) => {
@@ -62,16 +70,11 @@ passport.use('local-signup', new LocalStrategy({passReqToCallback : true}, (req,
         // the request req.body.username || req.body.terms etc
                 const newUser = User.build({
                   username: username,
-                  password: password,
+                  password: hashPassword(password, 10),
                   email: req.body.email,
                   company: req.body.company,
                   salt: 10
                 });
-
-                // set the user's local credentials
-                
-                // newUser.email    = email;
-                // newUser.password = hashPassword(password, 10);
 
                 // // save the user
                 await newUser.save()
@@ -84,10 +87,10 @@ passport.serializeUser(function(user, done) {
   return done(null, user.id);
 });
 passport.deserializeUser(function(id, done) {
-  db.get('SELECT id, username FROM users WHERE id = ?', id, function(err, row) {
-    if (!row) return done(null, false);
-    return done(null, row);
-  });
+  User.findOne({ where: { 'id' :  id }})
+  .then((userResponce) => {
+    done(null ,userResponce)
+  })
 });
 
 
@@ -141,7 +144,8 @@ app.get('/app', isLoggedIn, (req, res) => {
   console.log("req user",req.user);
   res.json({ user : req.user });
 })
-app.post('/login', passport.authenticate('local', { successRedirect: '/good-login', failureRedirect: '/bad-login' }));
+
+app.post('/login', passport.authenticate('local', { successRedirect: '/app', failureRedirect: '/' }));
 
 app.get('/signup',(req,res, next) => {
   passport.authenticate('local', function(err, user, info) {

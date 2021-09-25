@@ -48,12 +48,23 @@ export default function CredentialsModal(props) {
 
         {!register ? <Formik
           initialValues={{ email: '', username: '', password: '' }}
-          onSubmit={(values, { setSubmitting }) => {
-            setTimeout(() => {
-              alert(JSON.stringify(values, null, 2));
-              setSubmitting(false);
-            }, 400);
-          }}
+          onSubmit={ async (values, { setSubmitting }) => {
+            await axios({
+              method: 'post',
+              url: '/login',
+              data: values
+            })
+            .then((loginResponse) => {
+              setSubmitting(false)
+              // setRegisterRes(response.data)
+              console.log('responce', loginResponse)
+            })
+            .catch((error) => {
+              // handle error
+              console.log(error);
+            })
+          
+        }}
         >
           {({
             values,
@@ -68,12 +79,12 @@ export default function CredentialsModal(props) {
             <form method='POST' onSubmit={handleSubmit}>
               <div class="form-group">
                 <label for="inputEmail">Email address</label>
-                <input type="email" class="form-control" aria-describedby="emailHelp" placeholder="Enter email" name="email" onChange={handleChange} onBlur={handleBlur} value={values.email} />
+                <input type="text" class="form-control" aria-describedby="emailHelp" placeholder="Enter username" name="username" onChange={handleChange} onBlur={handleBlur} value={values.username} />
                 <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
               </div>
               <div class="form-group">
                 <label for="exampleInputPassword1">Password</label>
-                <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password" />
+                <input type="password" class="form-control" id="password" placeholder="Password" name="password" onChange={handleChange} onBlur={handleBlur} value={values.password}/>
               </div>
               <br />
               <button type="submit" class="btn btn-primary">Login</button>
