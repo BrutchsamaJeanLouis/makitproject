@@ -6,6 +6,7 @@ import axios from 'axios';
 export default function CredentialsModal(props) {
   const { register, show, onCloseButton, onClickRegister, onSubmit } = props
   const [resgisterRes, setRegisterRes] = useState("empty")
+  const [ flashMessage, setFlashMessage] = useState("")
 
   function onSubmitForm(event) {
     const jsonObj = {}
@@ -94,35 +95,43 @@ export default function CredentialsModal(props) {
             onSubmit={ async (values, { setSubmitting }) => {
                 await axios({
                   method: 'post',
-                  url: '/register',
+                  url: '/signup',
                   data: values
                 })
-                .then( (response) => {
-                  setRegisterRes(response)
-                  console.log('responce', response)
+                .then((registerResponse) => {
+                  if(registerResponse.data?.message){
+                    setFlashMessage(registerResponse?.data?.message[0])
+                  }else{
+                    setFlashMessage("")
+                  }
                   setSubmitting(false)
+                  // setRegisterRes(response.data)
+                  console.log('responce', registerResponse)
                 })
-                // fetch('/register', {
+                .catch((error) => {
+                  // handle error
+                  console.log(error);
+                })
+                // fetch('/signup', {
                 //   method: 'POST',
-                //   body: body,
-                // }).then(console.log('fetch Reached', body))
-                alert(JSON.stringify(values, null, 2));
+                //   body: values,
+                // }).then(response => console.log(response))
               
             }}
             validate={values => {
               const errors = {};
-              // username validation
-              if(!values.username){
-                errors.username = 'Username Required'
-              }
-              //email validation
-              if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)) {
-                errors.email = 'Invalid email address';
-              }
-              // password validation
-              if(values.password !== values.confirmPassword){
-                errors.confirmPassword = 'Paswords must Match';
-              }
+              // // username validation
+              // if(!values.username){
+              //   errors.username = 'Username Required'
+              // }
+              // //email validation
+              // if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)) {
+              //   errors.email = 'Invalid email address';
+              // }
+              // // password validation
+              // if(values.password !== values.confirmPassword){
+              //   errors.confirmPassword = 'Paswords must Match';
+              // }
               return errors
             }}
           >
@@ -137,7 +146,8 @@ export default function CredentialsModal(props) {
               /* check Docs for more Methods */
             }) => (
               <form method='POST' onSubmit={handleSubmit}>
-                {resgisterRes}
+                <div style={{color: 'red'}}>{flashMessage}</div>
+                <br/>
                 <div class="form-group">
                 <div style={{ color: 'red'}}>{errors.username && touched.username && errors.username}</div>
                   <label for="username">Username</label>

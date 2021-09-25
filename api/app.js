@@ -6,8 +6,9 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser')
 var logger = require('morgan');
 var cors = require("cors");
-var Sequelize = require("sequelize")
+var Sequelize = require("sequelize");
 var session = require("express-session");
+var flash = require('connect-flash');
 var passport = require('passport')
 const { Strategy: LocalStrategy, } = require('passport-local');
 // var sequelize = new Sequelize();
@@ -24,6 +25,16 @@ var db = new sqlite3.Database('./db/makit.db');
 |               Custom Functions
 |
 ---------------------------------------------------------------------*/
+function isLoggedIn(req, res, next) {
+
+  // if user is authenticated in the session, carry on 
+  if (req.isAuthenticated())
+      return next();
+
+  // if they aren't redirect them to the home page
+  res.redirect('/');
+}
+
 function hashPassword(password, salt) {
   var hash = bcrypt.hashSync(password, salt)
   return hash
@@ -38,6 +49,36 @@ passport.use(new LocalStrategy(function(username, password, done){
       return done(null, row);
     });
   });
+}))
+passport.use('local-signup', new LocalStrategy({passReqToCallback : true}, (req, username, password, done) => {
+
+  // find a user whose email is the same as the forms email
+  // we are checking to see if the user trying to login already exists
+  User.findOne({ where: { 'username' :  username }}).then( async (userResponce) => {
+      // if there are any errors, return the error
+      if(userResponce){
+        return done(null, false, req.flash('signUpMessage', "User already Exist"));
+      }else{
+        // the request req.body.username || req.body.terms etc
+                const newUser = User.build({
+                  username: username,
+                  password: password,
+                  email: req.body.email,
+                  company: req.body.company,
+                  salt: 10
+                });
+
+                // set the user's local credentials
+                
+                // newUser.email    = email;
+                // newUser.password = hashPassword(password, 10);
+
+                // // save the user
+                await newUser.save()
+                console.log(`User ${username} Signned Up full data below:`,newUser)
+                return done(null, newUser);
+      }
+  })
 }))
 passport.serializeUser(function(user, done) {
   return done(null, user.id);
@@ -57,6 +98,7 @@ passport.deserializeUser(function(id, done) {
 ---------------------------------------------------------------------*/
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+const { info } = require('console');
 
 
 var app = express();
@@ -75,6 +117,7 @@ app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(session({ secret: 'sessionSecreat',resave: true, saveUninitialized:true})); // session secret
+app.use(flash());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -85,7 +128,7 @@ app.use(passport.session());
 |               SERVER ROUTE LINKER
 |
 ---------------------------------------------------------------------*/
-app.use('/', indexRouter);
+app.use('/index', indexRouter);
 app.use('/user', usersRouter);
 
 
@@ -94,24 +137,33 @@ app.use('/user', usersRouter);
 |                    API
 |
 ---------------------------------------------------------------------*/
+app.get('/app', isLoggedIn, (req, res) => {
+  console.log("req user",req.user);
+  res.json({ user : req.user });
+})
 app.post('/login', passport.authenticate('local', { successRedirect: '/good-login', failureRedirect: '/bad-login' }));
 
-app.post('/registerUser', passport.authenticate('local-signup', new LocalStrategy({passReqToCallback : true},(req, username, password, done) => {
-
-    process.nextTick(()=>{
-    // find a user whose email is the same as the forms email
-    // we are checking to see if the user trying to login already exists
-    User.findOne({ where: { 'username' :  'testsama' }}).then( (userResponce) => {
-        // if there are any errors, return the error
-
-            console.log(userResponce)
-
-    })})
-})))
-
-app.post('/register', (req, res)=>{
-  res.json({"username": req.body.username})
+app.get('/signup',(req,res, next) => {
+  passport.authenticate('local', function(err, user, info) {
+    if (err) { return next(err) }
+    if (!user) { return res.json( { message: req.flash('signUpMessage') }) }
+    res.json(user);
+  })(req, res, next);  
 })
+
+app.post('/signup', passport.authenticate('local-signup', {
+  passReqToCallback: true,
+  successRedirect : '/app', // redirect to the secure profile section
+  failureRedirect : '/signup',
+  failWithError: false,
+  failureMessage: true,
+  failureFlash : true // allow flash messages
+}));
+
+app.get('/logout', function(req, res) {
+  req.logout();
+  res.redirect('/');
+});
 
 
 // catch 404 and forward to error handler
