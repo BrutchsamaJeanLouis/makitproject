@@ -1,4 +1,5 @@
 const { Sequelize, DataTypes, Model } = require('sequelize');
+const Fund = require('./fund');
 // path from seqalize root to db path
 const sequelize = new Sequelize({dialect: 'sqlite', storage: './db/makit.db'});
 
@@ -18,15 +19,19 @@ Project.init({
   },
   fundID: {
       type: DataTypes.INTEGER,
-      allowNull: true
+      allowNull: true,
+      references: {         // User belongsTo Fund 1:1
+        model: Fund,
+        key: 'id'
+      }
   }
 }, {
-    // Other model options go here
+    // Other model options
     sequelize,
     tableName: 'projects',
     timestamps: true,
     modelName: 'Project'
 });
-Project.sync({ alter: true })
+Project.sync({ force: true })
 
 module.exports = Project

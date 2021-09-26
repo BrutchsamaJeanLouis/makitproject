@@ -1,3 +1,5 @@
+// TODO Split controllers into different server routers
+
 var createError = require('http-errors');
 var express = require('express');
 var fs = require('fs').promises;
@@ -15,7 +17,13 @@ const { Strategy: LocalStrategy, } = require('passport-local');
 var sqlite3 = require('sqlite3')
 var sqlite = require('sqlite')
 var bcrypt = require('bcrypt')
+
 const User = require('./db/models/user')
+const Project = require('./db/models/project')
+const Fund = require('./db/models/fund')
+const Like = require('./db/models/like')
+const Location = require('./db/models/location')
+const Media = require('./db/models/media')
 
 var db = new sqlite3.Database('./db/makit.db');
 
@@ -145,7 +153,12 @@ app.get('/app', isLoggedIn, (req, res) => {
   res.json({ user : req.user });
 })
 
-app.post('/login', passport.authenticate('local', { successRedirect: '/app', failureRedirect: '/' }));
+app.post('/login', passport.authenticate('local', { successRedirect: '/app', failureRedirect: '/login' , failureMessage: 'username or password incorrect'}));
+app.get('/login', (req, res, next) => {
+  if(!req.user){
+    res.json({message: ['invalid Credentials']})
+  }
+})
 
 app.get('/signup',(req,res, next) => {
   passport.authenticate('local', function(err, user, info) {
