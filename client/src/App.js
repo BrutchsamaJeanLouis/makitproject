@@ -18,6 +18,7 @@ function App() {
   const [iniState, setIniState] = useState()
   const [register, setRegister] = useState(false)
   const [showSignInModal, setShowSignInModal] = useState(false)
+  const [view , setView] = useState('home')
 
   useEffect(() => {
     console.log('signinModalState', showSignInModal)
@@ -25,7 +26,7 @@ function App() {
   }, [showSignInModal, register])
 
   const onClickRegisterLink = () => {
-    setShowSignInModal(!showSignInModal, () => {console.log("state Changed")})
+    setShowSignInModal(!showSignInModal, () => { console.log("state Changed") })
     console.log('onclickRegisterLink', showSignInModal)
   }
 
@@ -34,13 +35,13 @@ function App() {
       <CredentialsModal
         show={showSignInModal}
         register={register}
-        onCloseButton={() => {setShowSignInModal(!showSignInModal); setRegister(false)}}
-        onClickRegister={ () => setRegister(true)}
-        // onSubmitForm={console.log('submitted registration Form')}
+        onCloseButton={() => { setShowSignInModal(!showSignInModal); setRegister(false) }}
+        onClickRegister={() => setRegister(true)}
+      // onSubmitForm={console.log('submitted registration Form')}
       />
 
 
-      
+
 
     )
   }
@@ -66,10 +67,25 @@ function App() {
       <Navbar onClickRegister={onClickRegisterLink} />
       {accountModal()}
       <div className='row' style={{ marginTop: '115px', justifyContent: 'center' }}>
-        <div className='col-md-4' style={{ backgroundColor: 'grey', margin: '10px', width: '90%', height: '200px' }}>1</div>
+        <div className='col-md-4' style={{ backgroundColor: 'grey', margin: '10px', width: '90%', height: '200px' }}>
+
+
+          <div class="card mb-3">
+            <h5 class="card-header">h* with .card-header</h5>
+            <div class="card-body">
+              <h5 class="card-title">Text header</h5>
+              <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+              <a href="#" class="btn btn-secondary">Learn more</a>
+            </div>
+          </div>
+
+
+
+        </div>
         <div className='col-md-4' style={{ backgroundColor: 'grey', margin: '10px', width: '90%', height: '200px' }}>2</div>
         <div className='col-md-4' style={{ backgroundColor: 'grey', margin: '10px', width: '90%', height: '200px' }}>3</div>
         <div className='col-md-4' style={{ backgroundColor: 'grey', margin: '10px', width: '90%', height: '200px' }}>4</div>
+        <div className='col-md-4' style={{ backgroundColor: 'grey', margin: '10px', width: '90%', height: '200px' }}>5</div>
       </div>
     </div>
   )

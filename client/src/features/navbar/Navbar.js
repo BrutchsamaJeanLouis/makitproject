@@ -21,7 +21,7 @@ export default function Navbar(props) {
           <div className="menu-items">
             <ul>
               <li className="menu-item-1"><a href="#">Home</a></li>
-              <li className="menu-item-2"><a href="#">Blog</a></li>
+              <li className="menu-item-2"><a href="#">My Projects</a></li>
               <li className="menu-item-3"><a href="#">About us</a></li>
               <li className="menu-item-4"><a href="#">Contact us</a></li>
             </ul>
@@ -34,9 +34,15 @@ export default function Navbar(props) {
         </div>
       </div>
       <div className="toggle-menu">
+
+
+
         <label htmlFor="toggle-btn">
           <i className="fas fa-bars toggle-icon"> <img src='menu-hamburger.png' style={{ width: '30px', height: 'auto' }}/> </i>
         </label>
+
+        
+        
         <input id="toggle-btn" type="checkbox"/>
           <ul className="toggle-items">
             <li className="toggle-item-1"><a href="#">Home</a></li>
@@ -45,6 +51,9 @@ export default function Navbar(props) {
             <li className="toggle-item-4"><a href="#">Contact us</a></li>
             <li className="toggle-item-5"><button className='btn btn-link' onClick={(e) => props.onClickRegister()}>Register | login</button></li>
           </ul>
+
+          <input type="search" placeholder="search" style={{ width: '70%', marginLeft: '20px'}} /><button></button>
+
       </div>
     </div>
 
