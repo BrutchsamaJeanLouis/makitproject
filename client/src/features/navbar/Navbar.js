@@ -22,7 +22,7 @@ export default function Navbar(props) {
             <ul>
               <li className="menu-item-1"><a href="#">Home</a></li>
               <li className="menu-item-2"><a href="#">My Projects</a></li>
-              <li className="menu-item-3"><a href="#">About us</a></li>
+              <li className="menu-item-3"><a href="#">Inbox</a></li>
               <li className="menu-item-4"><a href="#">Contact us</a></li>
             </ul>
           </div>
@@ -46,13 +46,21 @@ export default function Navbar(props) {
         <input id="toggle-btn" type="checkbox"/>
           <ul className="toggle-items">
             <li className="toggle-item-1"><a href="#">Home</a></li>
-            <li className="toggle-item-2"><a href="#">Blog</a></li>
-            <li className="toggle-item-3"><a href="#">About us</a></li>
+            <li className="toggle-item-2"><a href="#">My Projects</a></li>
+            <li className="toggle-item-3"><a href="#"> Inbox</a></li>
             <li className="toggle-item-4"><a href="#">Contact us</a></li>
             <li className="toggle-item-5"><button className='btn btn-link' onClick={(e) => props.onClickRegister()}>Register | login</button></li>
           </ul>
 
-          <input type="search" placeholder="search" style={{ width: '70%', marginLeft: '20px'}} /><button></button>
+          <div class="wrap">
+   <div class="search">
+      <input type="text" class="searchTerm" placeholder="What are you looking for?"/>
+      <button type="submit" class="searchButton">
+        <i class="fa fa-search"></i>
+     </button>
+   </div>
+</div>
+          {/* <input type="search" placeholder="search projects" style={{ borderRadius: '20px', height: '2em', width: '70%', marginLeft: '20px'}} /><button></button> */}
 
       </div>
     </div>
