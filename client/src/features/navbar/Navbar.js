@@ -1,14 +1,20 @@
 import './Navbar.css'
 import React, {useState} from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import axios from 'axios'
+import { setUsername } from '../credentialsModal/credentialsModalSlice'
 
 export default function Navbar(props) {
-  const [menu, setMenu] = useState(false)
-
-  const show = (menu) ? "show" : ""
-
-  const toggleMenu = () => {
-    setMenu(!menu)
+  const logOutUser = () => {
+    axios.get('/logout')
+    .then((responce) => {
+      dispatch(setUsername(null))
+    })
   }
+
+  const userState = useSelector(state => state.session.user)
+
+  const dispatch = useDispatch()
 
   return (
     <div className="back-menu">
@@ -27,9 +33,15 @@ export default function Navbar(props) {
             </ul>
           </div>
           <div className="menu-register">
-            <button className="register btn btn-link" onClick={(e) => props.onClickRegister()}>Register</button>
-            <span style={{ color: '#fff', fontWeight: '900'}}>|</span>
-            <a className="register" href="#">login</a>
+            {!userState ?
+              <>
+              <button className="register btn btn-link" onClick={(e) => props.onClickRegister()}>Register</button>
+              <span style={{ color: '#fff', fontWeight: '900'}}>|</span>
+              <button className="register btn btn-link" onClick={(e) => props.onClickRegister()}>login</button>
+              </>
+              :
+              <button className="register btn btn-link" onClick={(e) => logOutUser()}>Logout</button>
+            }
           </div>
         </div>
       </div>
@@ -49,7 +61,10 @@ export default function Navbar(props) {
             <li className="toggle-item-2"><a href="#">My Projects</a></li>
             <li className="toggle-item-3"><a href="#"> Inbox</a></li>
             <li className="toggle-item-4"><a href="#">Contact us</a></li>
-            <li className="toggle-item-5"><button className='btn btn-link' onClick={(e) => props.onClickRegister()}>Register | login</button></li>
+            {!userState ?
+              <li className="toggle-item-5"><button className='btn btn-link' onClick={(e) => props.onClickRegister()}>Register | login</button></li>
+              : <li className="toggle-item-5"> <button className='btn btn-link' onClick={(e) => logOutUser()}>Logout</button></li>
+            }
           </ul>
 
           <div class="wrap">

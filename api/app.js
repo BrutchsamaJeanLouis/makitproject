@@ -1,19 +1,19 @@
 // TODO Split controllers into different server routers
 
-var createError = require('http-errors');
-var express = require('express');
-var fs = require('fs').promises;
-var path = require('path');
-var cookieParser = require('cookie-parser');
+var createError = require('http-errors')
+var express = require('express')
+var fs = require('fs').promises
+var path = require('path')
+var cookieParser = require('cookie-parser')
 var bodyParser = require('body-parser')
-var logger = require('morgan');
-var cors = require("cors");
-var Sequelize = require("sequelize");
-var session = require("express-session");
-var flash = require('connect-flash');
+var logger = require('morgan')
+var cors = require("cors")
+var Sequelize = require("sequelize")
+var session = require("express-session")
+var flash = require('connect-flash')
 var passport = require('passport')
-const { Strategy: LocalStrategy, } = require('passport-local');
-// var sequelize = new Sequelize();
+const { Strategy: LocalStrategy, } = require('passport-local')
+// var sequelize = new Sequelize()
 var sqlite3 = require('sqlite3')
 var sqlite = require('sqlite')
 var bcrypt = require('bcrypt')
@@ -25,8 +25,12 @@ const Like = require('./db/models/like')
 const Location = require('./db/models/location')
 const Media = require('./db/models/media')
 
-var db = new sqlite3.Database('./db/makit.db');
+var db = new sqlite3.Database('./db/makit.db')
 
+// run a seed with server for first initialization
+// TODO Make this into a script
+// const seedD = require('./db/seeders/starterData')
+// seedD()
 
 /*--------------------------------------------------------------------
 |
@@ -37,10 +41,20 @@ function isLoggedIn(req, res, next) {
 
   // if user is authenticated in the session, carry on 
   if (req.isAuthenticated())
-      return next();
+      return next()
 
   // if they aren't redirect them to the home page
-  res.redirect('/');
+  res.redirect('/')
+}
+
+function logout (req, res, next) {
+  // Get rid of the session token. Then call `logout`; it does no harm.
+  req.logout()
+  req.session.destroy(function (err) {
+    if (err) { return next(err) }
+    // The response should indicate that the user is no longer authenticated.
+    return res.send({ authenticated: req.isAuthenticated() })
+  })
 }
 
 function hashPassword(password, salt) {
@@ -58,11 +72,15 @@ passport.use(new LocalStrategy((username, password, done) => {
   //   });
   // });
   User.findOne({where: {'username': username}}).then( (userResponce) => {
-    if(bcrypt.compareSync(password,userResponce.password)){
-      done(null, userResponce)
-    }else{
-      done(null, false)
-    }
+    if (userResponce){
+      if(bcrypt.compareSync(password,userResponce.password)){
+        done(null, userResponce)
+      }else{
+        done(null, false)
+      }
+  } else {
+    done(null, false)
+  }
   })
 }))
 passport.use('local-signup', new LocalStrategy({passReqToCallback : true}, (req, username, password, done) => {
@@ -110,6 +128,7 @@ passport.deserializeUser(function(id, done) {
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 const { info } = require('console');
+const { default: seedDB } = require('./db/seeders/starterData')
 
 
 var app = express();
@@ -154,9 +173,26 @@ app.get('/app', isLoggedIn, (req, res) => {
 })
 
 app.post('/login', passport.authenticate('local', { successRedirect: '/app', failureRedirect: '/login' , failureMessage: 'username or password incorrect'}));
+
 app.get('/login', (req, res, next) => {
   if(!req.user){
     res.json({message: ['invalid Credentials']})
+  }
+})
+
+// app.get('/logout', logout, (req, res) => {
+//   res.json({ user: req.user })
+// })
+
+app.get('/logout', (req, res) => {
+  req.logout();
+  if (req.session) { 
+    req.session.destroy(function (err) {
+      if (err) { 
+        console.log(err)
+      }
+      res.json({ user: req.user })
+    })
   }
 })
 
@@ -177,10 +213,11 @@ app.post('/signup', passport.authenticate('local-signup', {
   failureFlash : true // allow flash messages
 }));
 
-app.get('/logout', function(req, res) {
-  req.logout();
-  res.redirect('/');
-});
+// app.get('/logout', function(req, res) {
+//   req.logout();
+//   res.redirect('/');
+// });
+
 
 
 // catch 404 and forward to error handler

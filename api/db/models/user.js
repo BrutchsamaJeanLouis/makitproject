@@ -36,7 +36,7 @@ User.init({
     timestamps: true,
     modelName: 'User'
 });
-User.sync({ force: true })
+User.sync({ alter: true })
 
 // const testSave = async () => {
 //     const sama = User.build({

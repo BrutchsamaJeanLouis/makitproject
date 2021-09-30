@@ -10,6 +10,8 @@ import Navbar from './features/navbar/Navbar'
 import CredentialsModal from './features/credentialsModal/CredentialsModal';
 import { Modal, Button, Form } from 'react-bootstrap';
 import { Formik } from 'formik'
+import { useSelector, useDispatch, shallowEqual } from 'react-redux'
+import { setUserID, setUsername } from './features/credentialsModal/credentialsModalSlice';
 
 
 
@@ -19,6 +21,38 @@ function App() {
   const [register, setRegister] = useState(false)
   const [showSignInModal, setShowSignInModal] = useState(false)
   const [view , setView] = useState('home')
+
+  const userState = useSelector((rootState) => {
+    return rootState.session.user
+  })
+
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    // fetch api whenever App attached to the DOM
+    axios({
+      method: 'get',
+      url: '/app'
+    })
+      .then((response) => {
+        // setRegisterRes(response.data)
+        if (!response.data.user?.username){
+          console.log('no user')
+        }else{
+          dispatch(setUsername(response.data.user.username))
+          dispatch(setUserID(response.data.user.id))
+        }
+        console.log('App Attached to DOM fetch', response)
+      })
+      .catch((error) => {
+        // handle error
+        console.log(error);
+      })
+      // attach dispatch to sideeffect to rerender with ever any action is called
+  }, [dispatch])
+
+  // useselctor to get state
+  // usedispatch to dispatch an actions
 
   useEffect(() => {
     console.log('signinModalState', showSignInModal)
@@ -67,6 +101,7 @@ function App() {
       <Navbar onClickRegister={onClickRegisterLink} />
       {accountModal()}
       <div className='row' style={{ marginTop: '115px', justifyContent: 'center' }}>
+      {userState}
         <div className='col-md-4' style={{ backgroundColor: 'grey', margin: '10px', width: '90%', height: '200px' }}>
 
 

@@ -32,6 +32,6 @@ Like.init({
     timestamps: true,
     modelName: 'Like'
 });
-Like.sync({ force: true })
+Like.sync({ alter: true })
 
 module.exports = Like

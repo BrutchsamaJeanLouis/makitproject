@@ -1,14 +1,17 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Modal } from 'react-bootstrap';
 import { Formik } from 'formik';
 import axios from 'axios';
 import './CredentialsModal.css';
+import { useSelector, useDispatch, shallowEqual } from 'react-redux'
+import { setUserID, setUsername } from './credentialsModalSlice'
 
 export default function CredentialsModal(props) {
   const { register, show, onCloseButton, onClickRegister, onSubmit } = props
   const [resgisterRes, setRegisterRes] = useState("empty")
   const [signupFlashMessage, setSignupFlashMessage] = useState('')
   const [loginFlashMessage, setLoginFlashMessage] = useState('')
+  const dispatch = useDispatch()
 
   function onSubmitForm(event) {
     const jsonObj = {}
@@ -62,6 +65,8 @@ export default function CredentialsModal(props) {
                 } else {
                   setLoginFlashMessage("")
                 }
+                dispatch(setUsername(loginResponse.data.user.username))
+                dispatch(setUserID(loginResponse.data.user.id))
                 setSubmitting(false)
                 // setRegisterRes(response.data)
                 console.log('responce', loginResponse)
@@ -124,6 +129,18 @@ export default function CredentialsModal(props) {
                   } else {
                     setSignupFlashMessage("")
                   }
+                //   {
+                //     "id": 1,
+                //     "username": "sam",
+                //     "email": "sam@mail.com",
+                //     "company": null,
+                //     "password": "$2b$10$bKn6ni4HgmLXQ4gLMS.yqexHzps3jFqO4t.YRkbMOA0i7z94V9RTC",
+                //     "salt": "10",
+                //     "createdAt": "2021-09-30T15:04:53.040Z",
+                //     "updatedAt": "2021-09-30T15:04:53.040Z"
+                // }
+                  dispatch(setUsername(registerResponse.data.user.username))
+                  dispatch(setUserID(registerResponse.data.user.id))
                   setSubmitting(false)
                   // setRegisterRes(response.data)
                   console.log('responce', registerResponse)

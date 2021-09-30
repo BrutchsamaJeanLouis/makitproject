@@ -32,6 +32,6 @@ Project.init({
     timestamps: true,
     modelName: 'Project'
 });
-Project.sync({ force: true })
+Project.sync({ alter: true })
 
 module.exports = Project

@@ -31,6 +31,6 @@ Media.init({
     timestamps: true,
     modelName: 'Media'
 });
-Media.sync({ force: true })
+Media.sync({ alter: true })
 
 module.exports = Media

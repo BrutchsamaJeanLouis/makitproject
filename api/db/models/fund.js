@@ -28,6 +28,6 @@ Fund.init({
     timestamps: true,
     modelName: 'Fund'
 });
-Fund.sync({ force: true })
+Fund.sync({ alter: true })
 
 module.exports = Fund

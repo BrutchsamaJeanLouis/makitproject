@@ -39,6 +39,6 @@ Location.init({
     timestamps: true,
     modelName: 'Location'
 });
-Location.sync({ force: true })
+Location.sync({ alter: true })
 
 module.exports = Location
