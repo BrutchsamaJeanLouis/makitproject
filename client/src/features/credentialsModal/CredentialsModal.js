@@ -13,34 +13,6 @@ export default function CredentialsModal(props) {
   const [loginFlashMessage, setLoginFlashMessage] = useState('')
   const dispatch = useDispatch()
 
-  function onSubmitForm(event) {
-    const jsonObj = {}
-    event.preventDefault()
-    // or directly e.target.inputEmail.value || e.target.elements.inputEmail.value
-    // const data = new FormData(event.target)
-    // data.forEach(function(value, key){
-    //     jsonObj[key] = value;
-    // });
-    // console.log('onedata', data.get('confirm-password'))
-
-
-    // for (var [key, value] of Object.entries(event.target.elements)) {
-    //     if(value.value){
-    //         jsonObj
-    //         console.log(value.id, value.value)
-    //     }else {
-    //         console.log('null')
-    //         //console.log(key, value?.value);
-    //     }
-    //    }
-    console.log(typeof event.target.elements)
-    fetch('/register', {
-      method: 'POST',
-      body: jsonObj,
-    }).then(console.log('fetch Reached', jsonObj))
-
-
-  }
   return (
     <Modal show={show} onHide={() => onCloseButton()} >
       <Modal.Header closeButton closeLabel='close'>
@@ -49,7 +21,7 @@ export default function CredentialsModal(props) {
 
       <Modal.Body>
 
-        {/* LOGIN BODY */}
+        {/* SIGNIN BODY */}
 
         {!register ? <Formik
           initialValues={{ email: '', username: '', password: '' }}
@@ -65,6 +37,7 @@ export default function CredentialsModal(props) {
                 } else {
                   setLoginFlashMessage("")
                 }
+                onCloseButton()
                 dispatch(setUsername(loginResponse.data.user.username))
                 dispatch(setUserID(loginResponse.data.user.id))
                 setSubmitting(false)
@@ -139,6 +112,7 @@ export default function CredentialsModal(props) {
                 //     "createdAt": "2021-09-30T15:04:53.040Z",
                 //     "updatedAt": "2021-09-30T15:04:53.040Z"
                 // }
+                  onCloseButton()
                   dispatch(setUsername(registerResponse.data.user.username))
                   dispatch(setUserID(registerResponse.data.user.id))
                   setSubmitting(false)

@@ -5,14 +5,6 @@ import  ThunkMiddleware from 'redux-thunk';
 import counterReducer from '../features/counter/counterSlice';
 import sessionReducer from '../features/credentialsModal/credentialsModalSlice';
 
-const rootReducer = {
-  userID: 'imported Reducer Goes Here',
-  username: 'Imported Reducer Goes here',
-  
-
-
-}
-
 
 export const store = configureStore({
   reducer: {

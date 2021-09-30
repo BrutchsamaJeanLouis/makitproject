@@ -62,8 +62,8 @@ export default function Navbar(props) {
             <li className="toggle-item-3"><a href="#"> Inbox</a></li>
             <li className="toggle-item-4"><a href="#">Contact us</a></li>
             {!userState ?
-              <li className="toggle-item-5"><button className='btn btn-link' onClick={(e) => props.onClickRegister()}>Register | login</button></li>
-              : <li className="toggle-item-5"> <button className='btn btn-link' onClick={(e) => logOutUser()}>Logout</button></li>
+              <li className="toggle-item-5"><button className='btn btn-link' onClick={(e) => props.onClickRegister()}>Register|login</button></li>
+              : <li className="toggle-item-5"> <button className='btn btn-link' onClick={(e) => logOutUser()}>Sign out </button></li>
             }
           </ul>
 

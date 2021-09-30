@@ -47,31 +47,16 @@ function isLoggedIn(req, res, next) {
   res.redirect('/')
 }
 
-function logout (req, res, next) {
-  // Get rid of the session token. Then call `logout`; it does no harm.
-  req.logout()
-  req.session.destroy(function (err) {
-    if (err) { return next(err) }
-    // The response should indicate that the user is no longer authenticated.
-    return res.send({ authenticated: req.isAuthenticated() })
-  })
-}
-
 function hashPassword(password, salt) {
   var hash = bcrypt.hashSync(password, salt)
   return hash
 }
 
 passport.use(new LocalStrategy((username, password, done) => {
-  // db.get('SELECT salt FROM users WHERE username = ?', username, function(err, row) {
-  //   if (!row) return done(null, false);
-  //   var hash = hashPassword(password, 10);
-  //   db.get('SELECT username, id FROM users WHERE username = ? AND password = ?', username, hash, function(err, row) {
-  //     if (!row) return done(null, false);
-  //     return done(null, row);
-  //   });
-  // });
-  User.findOne({where: {'username': username}}).then( (userResponce) => {
+
+  // TODO fix associaltions/relationships to eager load here
+  // User.findOne({where: {'username': username}, include: [ Project, Location, Fund,] })
+  User.findOne({where: {'username': username}, include: [ Project, Location, Fund,] }).then( (userResponce) => {
     if (userResponce){
       if(bcrypt.compareSync(password,userResponce.password)){
         done(null, userResponce)
@@ -83,6 +68,7 @@ passport.use(new LocalStrategy((username, password, done) => {
   }
   })
 }))
+
 passport.use('local-signup', new LocalStrategy({passReqToCallback : true}, (req, username, password, done) => {
 
   // TODO add failure conditions like if variable not found and missing keys
