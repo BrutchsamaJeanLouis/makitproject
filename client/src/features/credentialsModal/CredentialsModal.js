@@ -3,27 +3,30 @@ import { Modal } from 'react-bootstrap';
 import { Formik } from 'formik';
 import axios from 'axios';
 import './CredentialsModal.css';
-import { useSelector, useDispatch, shallowEqual } from 'react-redux'
-import { setUserID, setUsername } from './credentialsModalSlice'
+import { useSelector, useDispatch } from 'react-redux'
+import { setUserID, setUsername, setCredentialsModalShow, setCredentialsModalView } from './credentialsModalSlice'
 
 export default function CredentialsModal(props) {
-  const { register, show, onCloseButton, onClickRegister, onSubmit } = props
-  const [resgisterRes, setRegisterRes] = useState("empty")
   const [signupFlashMessage, setSignupFlashMessage] = useState('')
   const [loginFlashMessage, setLoginFlashMessage] = useState('')
   const dispatch = useDispatch()
+  const credentialsModalShow = useSelector(rootstate => rootstate.session.credentialsModalShow)
+  const credentialsModalView = useSelector(rootstate => rootstate.session.credentialsModalView)
 
+  /*==================================================================
+  |                    React DOM
+  *==================================================================*/
   return (
-    <Modal show={show} onHide={() => onCloseButton()} >
+    <Modal show={credentialsModalShow} onHide={() => dispatch(setCredentialsModalShow(false))} >
       <Modal.Header closeButton closeLabel='close'>
-        <Modal.Title>{!register ? 'Sign In' : 'Register'}</Modal.Title>
+        <Modal.Title>{credentialsModalView === 1 ? 'Sign In' : 'Register'}</Modal.Title>
       </Modal.Header>
 
       <Modal.Body>
 
         {/* SIGNIN BODY */}
 
-        {!register ? <Formik
+        {credentialsModalView === 1 ? <Formik
           initialValues={{ email: '', username: '', password: '' }}
           onSubmit={async (values, { setSubmitting }) => {
             await axios({
@@ -34,12 +37,13 @@ export default function CredentialsModal(props) {
               .then((loginResponse) => {
                 if (loginResponse.data?.message) {
                   setLoginFlashMessage(loginResponse?.data?.message[0])
-                } else {
-                  setLoginFlashMessage("")
+                  setTimeout(() => setLoginFlashMessage(""), 1600);
                 }
-                onCloseButton()
-                dispatch(setUsername(loginResponse.data.user.username))
-                dispatch(setUserID(loginResponse.data.user.id))
+                if (loginResponse.data.user?.username){
+                  dispatch(setUsername(loginResponse.data.user.username))
+                  dispatch(setUserID(loginResponse.data.user.id))
+                  dispatch(setCredentialsModalShow(false))
+                }
                 setSubmitting(false)
                 // setRegisterRes(response.data)
                 console.log('responce', loginResponse)
@@ -62,20 +66,23 @@ export default function CredentialsModal(props) {
             /* check Docs for more Methods */
           }) => (
             <form method='POST' onSubmit={handleSubmit}>
-              <div style={{ color: 'red' }}>{loginFlashMessage}</div>
+              {loginFlashMessage !== "" ? <div className='error-signup' style={{ color: 'red', minHeight: '1.5em', textAlign: 'center' }}><i style={{ fontSize: '10px'}}class="bi bi-x-circle-fill"></i>{loginFlashMessage}</div>
+                : <div style={{ color: 'red', minHeight: '1.5em', textAlign: 'center' }}></div>
+              
+              }
               <br />
-              <div class="form-group">
-                <label for="inputEmail">Email address</label>
-                <input type="text" class="form-control" aria-describedby="emailHelp" placeholder="Enter username" name="username" onChange={handleChange} onBlur={handleBlur} value={values.username} />
-                <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+              <div className="form-group">
+                <label htmlFor="inputEmail">Email address</label>
+                <input type="text" className="form-control" aria-describedby="emailHelp" placeholder="Enter username" name="username" onChange={handleChange} onBlur={handleBlur} value={values.username} />
+                <small id="emailHelp" className="form-text text-muted">We'll never share your email with anyone else.</small>
               </div>
-              <div class="form-group">
-                <label for="exampleInputPassword1">Password</label>
-                <input type="password" class="form-control" id="password" placeholder="Password" name="password" onChange={handleChange} onBlur={handleBlur} value={values.password} />
+              <div className="form-group">
+                <label htmlFor="exampleInputPassword1">Password</label>
+                <input type="password" className="form-control" id="password" placeholder="Password" name="password" onChange={handleChange} onBlur={handleBlur} value={values.password} />
               </div>
               <br />
-              <button type="submit" class="btn btn-primary">Login</button>
-              <h6>Don't have an account <button className='btn btn-link float-right' onClick={() => onClickRegister()}>Register</button></h6>
+              <button type="submit" className="btn btn-primary">Login</button>
+              <h6>Don't have an account <button className='btn btn-link float-right' onClick={() => {dispatch(setCredentialsModalView(2)); setSignupFlashMessage(''); setLoginFlashMessage('');}}>Register</button></h6>
             </form>
           )}
         </Formik>
@@ -99,9 +106,11 @@ export default function CredentialsModal(props) {
                 .then((registerResponse) => {
                   if (registerResponse.data?.message) {
                     setSignupFlashMessage(registerResponse?.data?.message[0])
-                  } else {
-                    setSignupFlashMessage("")
-                  }
+                  } 
+                  // else {
+                  //   setSignupFlashMessage("")
+                  // }
+
                 //   {
                 //     "id": 1,
                 //     "username": "sam",
@@ -112,7 +121,6 @@ export default function CredentialsModal(props) {
                 //     "createdAt": "2021-09-30T15:04:53.040Z",
                 //     "updatedAt": "2021-09-30T15:04:53.040Z"
                 // }
-                  onCloseButton()
                   dispatch(setUsername(registerResponse.data.user.username))
                   dispatch(setUserID(registerResponse.data.user.id))
                   setSubmitting(false)
@@ -159,37 +167,37 @@ export default function CredentialsModal(props) {
               <form method='POST' onSubmit={handleSubmit}>
                 <div style={{ color: 'red' }}>{signupFlashMessage}</div>
                 <br />
-                <div class="form-group">
+                <div className="form-group">
                   <div style={{ color: 'red' }}>{errors.username && touched.username && errors.username}</div>
-                  <label for="username">Username</label>
-                  <input type="text" class="form-control" placeholder="Enter username" name="username" onChange={handleChange} onBlur={handleBlur} value={values.username} />
+                  <label htmlFor="username">Username</label>
+                  <input type="text" className="form-control" placeholder="Enter username" name="username" onChange={handleChange} onBlur={handleBlur} value={values.username} />
                 </div>
-                <div class="form-group">
+                <div className="form-group">
                   <div style={{ color: 'red' }}>{errors.email && touched.email && errors.email}</div>
-                  <label for="inputEmail">Email address</label>
-                  <input type="email" class="form-control" aria-describedby="emailHelp" placeholder="Enter email" name="email" onChange={handleChange} onBlur={handleBlur} value={values.email} />
-                  <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+                  <label htmlFor="inputEmail">Email address</label>
+                  <input type="email" className="form-control" aria-describedby="emailHelp" placeholder="Enter email" name="email" onChange={handleChange} onBlur={handleBlur} value={values.email} />
+                  <small id="emailHelp" className="form-text text-muted">We'll never share your email with anyone else.</small>
                 </div>
-                <div class="form-group">
-                  <label for="exampleInputPassword1">Password</label>
-                  <input type="password" class="form-control" placeholder="Password" name="password" onChange={handleChange} onBlur={handleBlur} value={values.password} />
+                <div className="form-group">
+                  <label htmlFor="exampleInputPassword1">Password</label>
+                  <input type="password" className="form-control" placeholder="Password" name="password" onChange={handleChange} onBlur={handleBlur} value={values.password} />
                 </div>
-                <div class="form-group">
+                <div className="form-group">
                   <div style={{ color: 'red' }}>{errors.confirmPassword && touched.confirmPassword && errors.confirmPassword}</div>
-                  <label for="confirm-password">Confirm Password</label>
-                  <input type="password" class="form-control" placeholder="" name="confirmPassword" onChange={handleChange} onBlur={handleBlur} value={values.confirmPassword} />
+                  <label htmlFor="confirm-password">Confirm Password</label>
+                  <input type="password" className="form-control" placeholder="" name="confirmPassword" onChange={handleChange} onBlur={handleBlur} value={values.confirmPassword} />
                 </div>
-                <div class="form-group">
-                  <label for="corporation">Corporation</label>
-                  <input type="text" class="form-control" placeholder="optional" name="corporation" onChange={handleChange} onBlur={handleBlur} value={values.corporation} />
-                </div>
-                <br />
-                <div class="form-check">
-                  <input type="checkbox" class="form-check-input" name="terms" onChange={handleChange} onBlur={handleBlur} value={values.terms} />
-                  <label class="form-check-label" for="exampleCheck1">I agree to the and terms or service</label>
+                <div className="form-group">
+                  <label htmlFor="corporation">Corporation</label>
+                  <input type="text" className="form-control" placeholder="optional" name="corporation" onChange={handleChange} onBlur={handleBlur} value={values.corporation} />
                 </div>
                 <br />
-                <button type="submit" class="btn btn-primary">Register</button>
+                <div className="form-check">
+                  <input type="checkbox" className="form-check-input" name="terms" onChange={handleChange} onBlur={handleBlur} value={values.terms} />
+                  <label className="form-check-label" htmlFor="exampleCheck1">I agree to the and terms or service</label>
+                </div>
+                <br />
+                <button type="submit" className="btn btn-primary">Register</button>
               </form>
             )}
           </Formik>

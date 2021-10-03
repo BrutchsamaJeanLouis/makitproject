@@ -28,7 +28,7 @@ const Media = require('./db/models/media')
 var db = new sqlite3.Database('./db/makit.db')
 
 // run a seed with server for first initialization
-// TODO Make this into a script
+// TODO Make this into a script for relese
 // const seedD = require('./db/seeders/starterData')
 // seedD()
 
@@ -56,7 +56,7 @@ passport.use(new LocalStrategy((username, password, done) => {
 
   // TODO fix associaltions/relationships to eager load here
   // User.findOne({where: {'username': username}, include: [ Project, Location, Fund,] })
-  User.findOne({where: {'username': username}, include: [ Project, Location, Fund,] }).then( (userResponce) => {
+  User.findOne({where: {'username': username}}).then( (userResponce) => {
     if (userResponce){
       if(bcrypt.compareSync(password,userResponce.password)){
         done(null, userResponce)
@@ -121,7 +121,8 @@ var app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+// app.set('view engine', 'ejs');
+app.set('view engine', 'jade')
 
 // to allow Resposce from other cross origins like another localHost
 // Disable ths on production for security reasons add middleWare to accept only valid connections
@@ -162,7 +163,7 @@ app.post('/login', passport.authenticate('local', { successRedirect: '/app', fai
 
 app.get('/login', (req, res, next) => {
   if(!req.user){
-    res.json({message: ['invalid Credentials']})
+    res.json({message: ['Invalid credentials']})
   }
 })
 

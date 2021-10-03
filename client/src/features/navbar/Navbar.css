@@ -172,7 +172,8 @@ li[class^="toggle-item-"] a:hover{
 }
 
 .search {
-  width: 100%;
+    /* initially was 80% */
+  width: 80%;
   position: relative;
   display: flex;
 }
@@ -211,4 +212,33 @@ li[class^="toggle-item-"] a:hover{
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+
+.user-circle {
+    border: #4a6de2 solid 7px;
+    justify-self: right;
+    align-self: center;
+    justify-content: center;
+    /* align-content: center; */
+    cursor: pointer;
+    position: relative;
+    /* margin-top: 30px; */
+    height: 75px;
+    width: 80px;
+    background-color: #bbb;
+    border-radius: 50%;
+    display: flex;
+  }
+.user-circle > * {
+    margin-top: 5px;
+    position: relative;
+    /* text-justify: auto; */
+    font-size: xx-large;
+    font-weight: bold;
+    color: #fff;
+    /* text-align: center; */
+}
+
+.btn-nav-mobile{
+    color: black;
 }

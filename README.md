@@ -26,4 +26,15 @@ BackEnd
 
 Please refer to xdocs folder for detailed documentation
 
+run prod instructions 
+npm install -g serve on
+serve -s build to run prod client
+npm start in client
+
+or
+
+npm run prod from root folder
+
+optimal copy react build to server views folder and res.render from server
+
 
