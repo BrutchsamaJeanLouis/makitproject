@@ -4,11 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "backend": "cd ./api && npm start",
+    "server": "cd ./api && npm start",
     "clientprod": "cd ./client && serve -S build",
-    "clientdev": "cd ./client && npm run start",
-    "prod": "concurrently \"npm run backend\" \"npm run clientprod\"",
-    "start": "concurrently \"npm run backend\" \"npm run clientdev\"",
+    "client": "cd ./client && npm run start",
+    "prod": "concurrently \"npm run server\" \"npm run clientprod\"",
+    "start": "concurrently \"npm run server\" \"npm run client\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
