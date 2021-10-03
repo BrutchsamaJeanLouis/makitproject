@@ -63,12 +63,19 @@ function App() {
         {/* card */}
         <div className='col-md-3' style={{ margin: '10px' }}>
           <div className="card mb-3">
-            <h5 className="card-header">h* with .card-header</h5>
-            <div className="card-body">
-              <h5 className="card-title">Text header</h5>
+            <h5 className="card-header">
+              <div className='user-circle-post'>.</div> 
+              <div className='post-user' style={{ display: 'inline-block'}}>
+                My Username
+                <p style={{ fontSize: '0.7em'}}>2 mins ago</p>
+              </div>
+            </h5>
+            <div className="card-body" style={{ borderTopRightRadius: '50px'}}>
+              <h5 className="card-title">Product to make electricity infinite</h5>
               <p className="card-text">With supporting text below as a natural lead-in to additional content.</p>
               <button href="#" className="btn btn-secondary">Learn more</button>
             </div>
+            <div className='card-footer'>any Likes or Comments?</div>
           </div>
         </div>
 

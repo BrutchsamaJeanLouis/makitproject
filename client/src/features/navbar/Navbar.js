@@ -60,7 +60,7 @@ export default function Navbar(props) {
           <li className="toggle-item-1"><button className='btn btn-link btn-nav-mobile'><i className="bi bi-house" style={{ marginRight: '5px' }}/>Home</button></li>
           <li className="toggle-item-2"><button className='btn btn-link btn-nav-mobile'><i className="bi bi-lightbulb" style={{ marginRight: '5px' }}/>My Projects</button></li>
           <li className="toggle-item-3"><button className='btn btn-link btn-nav-mobile'><i className="bi bi-envelope" style={{ marginRight: '5px' }}></i>Inbox</button></li>
-          <li className="toggle-item-4"><button className='btn btn-link btn-nav-mobile'><i className="bi bi-gear" style={{ marginRight: '5px' }}></i>{userState?.slice(0, 19)}</button></li>
+          {userState && <li className="toggle-item-4"><button className='btn btn-link btn-nav-mobile'><i className="bi bi-gear" style={{ marginRight: '5px' }}></i>{userState?.slice(0, 19)}</button></li>}
           <li className="toggle-item-4"><button className='btn btn-link btn-nav-mobile'><i className="bi bi-telephone" style={{ marginRight: '5px' }}></i>Contact us</button></li>
           {!userState ?
             <li className="toggle-item-5"><button className='btn btn-link' onClick={(e) => { dispatch(setCredentialsModalShow(true)); dispatch(setCredentialsModalView(1)) }}>Register|login</button></li>
