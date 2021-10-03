@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Modal } from 'react-bootstrap';
 import { Formik } from 'formik';
 import axios from 'axios';
@@ -66,7 +66,7 @@ export default function CredentialsModal(props) {
             /* check Docs for more Methods */
           }) => (
             <form method='POST' onSubmit={handleSubmit}>
-              {loginFlashMessage !== "" ? <div className='error-signup' style={{ color: 'red', minHeight: '1.5em', textAlign: 'center' }}><i style={{ fontSize: '0.7em'}}class="bi bi-x-circle-fill"></i>{loginFlashMessage}</div>
+              {loginFlashMessage !== "" ? <div className='error-signup' style={{ color: 'red', minHeight: '1.5em', textAlign: 'center' }}><i style={{ fontSize: '0.7em'}}className="bi bi-x-circle-fill"></i>{loginFlashMessage}</div>
                 : <div style={{ color: 'red', minHeight: '1.5em', textAlign: 'center' }}></div>
               
               }

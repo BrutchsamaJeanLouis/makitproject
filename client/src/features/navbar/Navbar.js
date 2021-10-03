@@ -1,5 +1,5 @@
 import './Navbar.css'
-import React, {useState} from 'react'
+import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import axios from 'axios'
 import { setUsername, setCredentialsModalShow, setCredentialsModalView } from '../credentialsModal/credentialsModalSlice'
@@ -52,16 +52,16 @@ export default function Navbar(props) {
       {/* Mobile / Tablets */}
       <div className="toggle-menu">
         <label htmlFor="toggle-btn">
-          <i className="fas fa-bars toggle-icon"> <img src='menu-hamburger.png' style={{ width: '30px', height: 'auto' }} /> </i>
+          <i className="fas fa-bars toggle-icon"> <img alt='menu-hamb' src='menu-hamburger.png' style={{ width: '30px', height: 'auto' }} /> </i>
         </label>
 
         <input id="toggle-btn" type="checkbox" />
         <ul className="toggle-items">
-          <li className="toggle-item-1"><button className='btn btn-link btn-nav-mobile'><i class="bi bi-house" style={{ marginRight: '5px' }}/>Home</button></li>
-          <li className="toggle-item-2"><button className='btn btn-link btn-nav-mobile'><i class="bi bi-lightbulb" style={{ marginRight: '5px' }}/>My Projects</button></li>
-          <li className="toggle-item-3"><button className='btn btn-link btn-nav-mobile'><i class="bi bi-envelope" style={{ marginRight: '5px' }}></i>Inbox</button></li>
-          <li className="toggle-item-4"><button className='btn btn-link btn-nav-mobile'><i class="bi bi-gear" style={{ marginRight: '5px' }}></i>{userState?.slice(0, 19)}</button></li>
-          <li className="toggle-item-4"><button className='btn btn-link btn-nav-mobile'><i class="bi bi-telephone" style={{ marginRight: '5px' }}></i>Contact us</button></li>
+          <li className="toggle-item-1"><button className='btn btn-link btn-nav-mobile'><i className="bi bi-house" style={{ marginRight: '5px' }}/>Home</button></li>
+          <li className="toggle-item-2"><button className='btn btn-link btn-nav-mobile'><i className="bi bi-lightbulb" style={{ marginRight: '5px' }}/>My Projects</button></li>
+          <li className="toggle-item-3"><button className='btn btn-link btn-nav-mobile'><i className="bi bi-envelope" style={{ marginRight: '5px' }}></i>Inbox</button></li>
+          <li className="toggle-item-4"><button className='btn btn-link btn-nav-mobile'><i className="bi bi-gear" style={{ marginRight: '5px' }}></i>{userState?.slice(0, 19)}</button></li>
+          <li className="toggle-item-4"><button className='btn btn-link btn-nav-mobile'><i className="bi bi-telephone" style={{ marginRight: '5px' }}></i>Contact us</button></li>
           {!userState ?
             <li className="toggle-item-5"><button className='btn btn-link' onClick={(e) => { dispatch(setCredentialsModalShow(true)); dispatch(setCredentialsModalView(1)) }}>Register|login</button></li>
             : <li className="toggle-item-5"> <button className='btn btn-link' onClick={(e) => logOutUser()}>Sign out </button></li>

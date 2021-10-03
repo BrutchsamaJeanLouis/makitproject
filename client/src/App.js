@@ -11,7 +11,7 @@ import Navbar from './features/navbar/Navbar'
 import CredentialsModal from './features/credentialsModal/CredentialsModal';
 // import { Modal, Button, Form } from 'react-bootstrap';
 // import { Formik } from 'formik'
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { setUserID, setUsername } from './features/credentialsModal/credentialsModalSlice';
 
 
@@ -19,9 +19,9 @@ import { setUserID, setUsername } from './features/credentialsModal/credentialsM
 
 function App() {
 
-  const userState = useSelector((rootState) => {
-    return rootState.session.user
-  })
+  // const userState = useSelector((rootState) => {
+  //   return rootState.session.user
+  // })
 
   const dispatch = useDispatch()
 

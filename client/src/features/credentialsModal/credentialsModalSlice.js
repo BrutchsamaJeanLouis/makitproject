@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 // import { fetchCount } from './counterAPI';      to import api fetches to fetch state with redux
 
 const initialState = {
@@ -13,7 +13,7 @@ const initialState = {
 // can be dispatched like a regular action: `dispatch(incrementAsync(10))`. This
 // will call the thunk with the `dispatch` function as the first argument. Async
 // code can then be executed and other actions can be dispatched. Thunks are
-// typically used to make async requests.
+// typically used to make async requests. Import createAsyncThunk
 // export const incrementAsync = createAsyncThunk(
 //   'counter/fetchCount',
 //   async (amount) => {
