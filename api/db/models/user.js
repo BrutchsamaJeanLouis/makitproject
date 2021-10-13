@@ -1,6 +1,8 @@
-const { Sequelize, DataTypes, Model } = require('sequelize');
+const { Sequelize, DataTypes, Model } = require('sequelize')
+const Project = require('./project')
 // path from seqalize root to db path
-const sequelize = new Sequelize({dialect: 'sqlite', storage: './db/makit.db'});
+const sequelize = new Sequelize({ dialect: 'sqlite', storage: './db/makit.db' })
+// add logging: false to paramterized constructor of sequalize to disable logging
 
 class User extends Model {}
 
@@ -18,24 +20,25 @@ User.init({
     allowNull: false
   },
   company: {
-      type: DataTypes.STRING,
-      allowNull: true
+    type: DataTypes.STRING,
+    allowNull: true
   },
   password: {
-      type: DataTypes.STRING,
-      allowNull: false
+    type: DataTypes.STRING,
+    allowNull: false
   },
   salt: {
-      type: DataTypes.STRING,
-      allowNull: false
+    type: DataTypes.STRING,
+    allowNull: false
   }
 }, {
-    // Other model options go here
-    sequelize,
-    tableName: 'users',
-    timestamps: true,
-    modelName: 'User'
-});
+  // Other model options go here
+  sequelize,
+  tableName: 'users',
+  timestamps: true,
+  modelName: 'User'
+})
+User.hasMany(Project)
 User.sync({ alter: true })
 
 // const testSave = async () => {

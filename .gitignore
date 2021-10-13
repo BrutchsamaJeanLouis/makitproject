@@ -1,6 +1,7 @@
 /.idea
 /node_modules
 /api/node_modules
+/api/db/makit.db
 /client/node_modules
 
 client/.pnp

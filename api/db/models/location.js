@@ -1,7 +1,7 @@
-const { Sequelize, DataTypes, Model } = require('sequelize');
-const Project = require('./project');
+const { Sequelize, DataTypes, Model } = require('sequelize')
+const Project = require('./project')
 // path from seqalize root to db path
-const sequelize = new Sequelize({dialect: 'sqlite', storage: './db/makit.db'});
+const sequelize = new Sequelize({ dialect: 'sqlite', storage: './db/makit.db' })
 
 class Location extends Model {}
 
@@ -11,14 +11,14 @@ Location.init({
   projectID: {
     type: DataTypes.INTEGER,
     allowNull: false,
-    references: {         // User belongsTo Company 1:1
-        model: Project,
-        key: 'id'
+    references: {
+      model: Project,
+      key: 'id'
     }
   },
   address: {
-      type: DataTypes.STRING,
-      allowNull: false
+    type: DataTypes.STRING,
+    allowNull: false
   },
   city: {
     type: DataTypes.STRING,
@@ -30,15 +30,15 @@ Location.init({
   },
   country: {
     type: DataTypes.STRING,
-    allowNull: false 
+    allowNull: false
   }
 }, {
-    // Other model options
-    sequelize,
-    tableName: 'locations',
-    timestamps: true,
-    modelName: 'Location'
-});
+  // Other model options
+  sequelize,
+  tableName: 'locations',
+  timestamps: true,
+  modelName: 'Location'
+})
 Location.sync({ alter: true })
 
 module.exports = Location
