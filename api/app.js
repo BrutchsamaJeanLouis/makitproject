@@ -15,17 +15,25 @@ const bcrypt = require('bcrypt')
 
 // Init Models
 const User = require('./db/models/user')
-const Project = require('./db/models/project')
-const Fund = require('./db/models/fund')
-const Like = require('./db/models/like')
-const Location = require('./db/models/location')
-const Media = require('./db/models/media')
 
-// run a seed with server for first initialization
-// TODO Make this into a script for release
-// Example user password: pwd
-// const seedD = require('./db/seeders/starterData')
-// seedD()
+const Project = require('./db/models/project')
+Project.afterSync('commentSync', () => console.log('Table projects successfully synced with sequelize'))
+
+const Location = require('./db/models/location')
+Location.afterSync('commentSync', () => console.log('Table locations successfully synced with sequelize'))
+
+const Rating = require('./db/models/rating')
+Rating.afterSync('commentSync', () => console.log('Table ratings successfully synced with sequelize'))
+
+const Fund = require('./db/models/fund')
+Fund.afterSync('commentSync', () => console.log('Table funds successfully synced with sequelize'))
+
+const Media = require('./db/models/media')
+Media.afterSync('commentSync', () => console.log('Table media successfully synced with sequelize'))
+
+const Comment = require('./db/models/comment')
+Comment.afterSync('commentSync', () => console.log('Table comments successfully synced with sequelize'))
+// Example users password: pwd
 
 /* --------------------------------------------------------------------
 |
@@ -148,15 +156,15 @@ app.use('/projects', projectRouter)
 app.get('/app', isLoggedIn, (req, res) => {
   console.log('req user', req.user)
   // TODO fix associations
-  Project.findAll({
-    where: { userID: req.user.id },
-    include: [
-      { model: Like }, { model: Location }, { model: Media }, { model: Fund }
-    ]
-  })
-    .then((userResponce) => {
-      res.json({ user: req.user, projects: userResponce })
-    })
+  // Project.findAll({
+  //   where: { userID: req.user.id },
+  //   include: [
+  //     { model: Rating }, { model: Location }, { model: Media }, { model: Fund }
+  //   ]
+  // })
+    // .then((userResponce) => {
+      res.json({ user: req.user, projects: [] })
+    // })
 })
 
 app.post('/login', passport.authenticate('local', { successRedirect: '/app', failureRedirect: '/login', failureMessage: 'username or password incorrect' }))

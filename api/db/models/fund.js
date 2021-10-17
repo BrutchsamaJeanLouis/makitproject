@@ -1,6 +1,8 @@
 const { Sequelize, DataTypes, Model } = require('sequelize')
 const Project = require('./project')
 const User = require('./user')
+// const Project = require('./project')
+// const User = require('./user')
 // path from seqalize root to db path
 const sequelize = new Sequelize({ dialect: 'sqlite', storage: './db/makit.db' })
 
@@ -9,26 +11,31 @@ class Fund extends Model {}
 // allowNull defaults to true if not set
 Fund.init({
   // Model attributes are defined here
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true
+  },
   amount: {
     type: DataTypes.INTEGER,
     allowNull: false
-  },
-  userID: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: {
-      model: User,
-      key: 'id'
-    }
-  },
-  projectID: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: {
-      model: Project,
-      key: 'id'
-    }
   }
+  // userID: {
+  //   type: DataTypes.INTEGER,
+  //   allowNull: false,
+  //   references: {
+  //     model: User,
+  //     key: 'id'
+  //   }
+  // },
+  // projectID: {
+  //   type: DataTypes.INTEGER,
+  //   allowNull: false,
+  //   references: {
+  //     model: Project,
+  //     key: 'id'
+  //   }
+  // }
 }, {
   // Other model options
   sequelize,
@@ -36,6 +43,11 @@ Fund.init({
   timestamps: true,
   modelName: 'Fund'
 })
-Fund.sync({ alter: true })
+Fund.belongsTo(User, { foreignKey: 'userId' })
+// User.hasMany(Fund)
 
+// Fund.belongsTo(Project, { foreignKey: 'projectID' })
+Project.hasMany(Fund, { foreignKey: 'projectId' })
+
+Fund.sync({ alter: true })
 module.exports = Fund

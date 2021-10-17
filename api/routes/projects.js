@@ -4,17 +4,19 @@ const isLoggedIn = require('../pluginFunctions')
 
 // Model to fetch
 const Project = require('../db/models/project')
-const Like = require('../db/models/like')
+const Rating = require('../db/models/rating')
 const Location = require('../db/models/location')
 const Media = require('../db/models/media')
 const Fund = require('../db/models/fund')
+const Comment = require('../db/models/comment')
+const User = require('../db/models/user')
 
 /* GET */
 router.get('/get', isLoggedIn, function (req, res, next) {
   Project.findAll({
     where: { userID: req.user.id },
     include: [
-      { model: Like }, { model: Location }, { model: Media }, { model: Fund }
+      { model: User }, { model: Rating }, { model: Comment }, { model: Location }, { model: Media }, { model: Fund }
     ]
   })
     .then((userResponce) => {

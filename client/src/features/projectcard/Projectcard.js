@@ -3,7 +3,7 @@ import './Projectcard.css'
 
 export default function Projectcard (props) {
   const project = props.project
-  const { Likes, Location, Media, Funds } = project
+  const { Rating, Location, Media, Funds } = project
 
   const exampleProjectData = {
     id: 1,

@@ -4,6 +4,7 @@ import Projectcard from '../projectcard/Projectcard'
 
 export default function MyProjects (props) {
   const [projects, setProjects] = useState()
+
   useEffect(() => {
     axios({
       method: 'get',
@@ -11,7 +12,7 @@ export default function MyProjects (props) {
     })
       .then((response) => {
         console.log('projects fetched', response)
-        if (response.data?.projects) {
+        if (response.data?.projects && response.data.projects.length !== 0) {
           setProjects(response.data.projects)
         }
       })
@@ -26,11 +27,13 @@ export default function MyProjects (props) {
   return (
 
     <div>
-      {projects && projects.map((value, indexKey) => {
-        return (
-          <Projectcard project={value} key={indexKey} />
-        )
-      })}
+      {!projects
+        ? <div>You haven't posted any projects yet</div>
+        : projects.map((value, indexKey) => {
+          return (
+            <Projectcard project={value} key={indexKey} />
+          )
+        })}
     </div>
   )
 }

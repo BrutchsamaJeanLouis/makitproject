@@ -1,7 +1,11 @@
 const { Sequelize, DataTypes, Model } = require('sequelize')
-const Project = require('./project')
+// const Comment = require('./comment')
+// const Fund = require('./fund')
+// const Project = require('./project')
+// const Rating = require('./rating')
 // path from seqalize root to db path
 const sequelize = new Sequelize({ dialect: 'sqlite', storage: './db/makit.db' })
+// sequelize.query('PRAGMA journal_mode=WAL;')
 // add logging: false to paramterized constructor of sequalize to disable logging
 
 class User extends Model {}
@@ -10,6 +14,11 @@ class User extends Model {}
 // const User = sequelize.define('User', {
 User.init({
   // Model attributes are defined here
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true
+  },
   username: {
     type: DataTypes.STRING,
     allowNull: false
@@ -38,22 +47,7 @@ User.init({
   timestamps: true,
   modelName: 'User'
 })
-User.hasMany(Project)
+
 User.sync({ alter: true })
-
-// const testSave = async () => {
-//     const sama = User.build({
-//         username: 'samaTest',
-//         password: '1234',
-//         email: 'fwfefve',
-//         salt: 'evdmvk',
-//     })
-
-//     sama.save().then(console.log('sucessfully saved test user'))
-//     console.log(sama instanceof User); // true
-//     console.log(sama.username);
-// }
-// // `sequelize.define` also returns the model
-// testSave()
 
 module.exports = User

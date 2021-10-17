@@ -8,14 +8,19 @@ class Location extends Model {}
 // allowNull defaults to true if not set
 Location.init({
   // Model attributes are defined here
-  projectID: {
+  id: {
     type: DataTypes.INTEGER,
-    allowNull: false,
-    references: {
-      model: Project,
-      key: 'id'
-    }
+    autoIncrement: true,
+    primaryKey: true
   },
+  // projectID: {
+  //   type: DataTypes.INTEGER,
+  //   allowNull: false,
+  //   references: {
+  //     model: Project,
+  //     key: 'id'
+  //   }
+  // },
   address: {
     type: DataTypes.STRING,
     allowNull: false
@@ -39,6 +44,8 @@ Location.init({
   timestamps: true,
   modelName: 'Location'
 })
-Location.sync({ alter: true })
+// Location.belongsTo(Project, { foreignKey: 'projectID' })
+Project.hasOne(Location, { foreignKey: 'projectId' })
 
+Location.sync({ alter: true })
 module.exports = Location

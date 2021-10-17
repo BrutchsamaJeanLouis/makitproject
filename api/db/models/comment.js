@@ -1,29 +1,20 @@
 const { Sequelize, DataTypes, Model } = require('sequelize')
+const Project = require('./project')
 const User = require('./user')
-// const Fund = require('./fund')
-// const Media = require('./media')
-// const Rating = require('./rating')
-// const Location = require('./location')
-// const Comment = require('./comment')
 // path from seqalize root to db path
 const sequelize = new Sequelize({ dialect: 'sqlite', storage: './db/makit.db' })
 
-class Project extends Model {}
+class Comment extends Model {}
 
 // allowNull defaults to true if not set
-Project.init({
+Comment.init({
   // Model attributes are defined here
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
     primaryKey: true
   },
-  name: {
-    type: DataTypes.STRING,
-    allowNull: false
-    // defaultValue: "John Doe"
-  },
-  description: {
+  value: {
     type: DataTypes.TEXT,
     allowNull: false
   }
@@ -35,15 +26,26 @@ Project.init({
   //     key: 'id'
   //   }
   // }
+  // projectID: {
+  //   type: DataTypes.INTEGER,
+  //   allowNull: false,
+  //   references: {
+  //     model: Project,
+  //     key: 'id'
+  //   }
+  // }
 }, {
   // Other model options
   sequelize,
-  tableName: 'projects',
+  tableName: 'comments',
   timestamps: true,
-  modelName: 'Project'
+  modelName: 'Comment'
 })
-Project.belongsTo(User, { foreignKey: 'userId' })
-// Project.hasOne(User)
+Comment.belongsTo(User, { foreignKey: 'userId' })
+// User.hasMany(Comment)// perered as assicia
 
-Project.sync({ alter: true })
-module.exports = Project
+// Comment.belongsTo(Project, { foreignKey: 'projectID' })
+Project.hasMany(Comment, { foreignKey: 'projectId' })
+
+Comment.sync({ alter: true })
+module.exports = Comment
