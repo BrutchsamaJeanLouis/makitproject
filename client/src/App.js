@@ -4,8 +4,8 @@ import 'jquery/src/jquery'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap-icons/font/bootstrap-icons.css'
 // import 'bootstrap/dist/js/bootstrap.min.js'
-import React, { useEffect } from 'react'
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
+import { BrowserRouter as Router, Switch, Route, Link, withRouter } from 'react-router-dom'
 // import { Counter } from './features/counter/Counter';
 import './App.css'
 import axios from 'axios'
@@ -13,16 +13,14 @@ import Navbar from './features/navbar/Navbar'
 import CredentialsModal from './features/credentialsModal/CredentialsModal'
 // import { Modal, Button, Form } from 'react-bootstrap';
 // import { Formik } from 'formik'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector, connect } from 'react-redux'
 import { setUserID, setUsername } from './features/credentialsModal/credentialsModalSlice'
 import MyProjects from './features/views/MyProjects'
 
-function App () {
-  // const userState = useSelector((rootState) => {
-  //   return rootState.session.user
-  // })
-
+function App (props) {
   const dispatch = useDispatch()
+
+  // TODO fetch projects here to be passed down as props
 
   useEffect(() => {
     // fetch api whenever App attached to the DOM
@@ -52,7 +50,7 @@ function App () {
 
   return (
     <div className='App' style={{ width: '100%', height: '100%' }}>
-      <Router>
+      <Router forceRefresh>
         <Navbar />
         <CredentialsModal />
 
@@ -76,5 +74,13 @@ function App () {
     </div>
   )
 }
+const mapStateToProps = (state) => ({
+  userID: state.session.userID,
+  username: state.session.user
+})
 
-export default App
+const mapDispatchToProps = {
+
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App)

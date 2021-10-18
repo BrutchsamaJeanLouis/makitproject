@@ -1,9 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import Projectcard from '../projectcard/Projectcard'
+import { useDispatch } from 'react-redux'
 
 export default function MyProjects (props) {
   const [projects, setProjects] = useState()
+
+  // const userState = useSelector((rootState) => {
+  //   return rootState.session.user
+  // })
+  const dispatch = useDispatch()
 
   useEffect(() => {
     axios({
@@ -21,8 +27,7 @@ export default function MyProjects (props) {
         console.log(error)
       })
     console.log('projectView Mounted the DOM > projectState:', projects)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [dispatch])
 
   return (
 

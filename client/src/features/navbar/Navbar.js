@@ -40,8 +40,7 @@ export default function Navbar (props) {
                 <button className='register btn btn-link' onClick={(e) => { dispatch(setCredentialsModalShow(true)); dispatch(setCredentialsModalView(1)) }}>login</button>
               </>
               :
-              <button className='register btn btn-link' onClick={(e) => logOutUser()}>Logout</button>
-            }
+              <button className='register btn btn-link' onClick={(e) => logOutUser()}>Logout</button>}
           </div>
         </div>
         {userState &&
@@ -56,15 +55,14 @@ export default function Navbar (props) {
 
         <input id='toggle-btn' type='checkbox' />
         <ul className='toggle-items'>
-          <li className='toggle-item-1'><button className='btn btn-link btn-nav-mobile'><i className='bi bi-house' style={{ marginRight: '5px' }}/>Home</button></li>
-          <li className='toggle-item-2'><button className='btn btn-link btn-nav-mobile'><i className='bi bi-lightbulb' style={{ marginRight: '5px' }}/>My Projects</button></li>
+          <li className='toggle-item-1'><button className='btn btn-link btn-nav-mobile'><i className='bi bi-house' style={{ marginRight: '5px' }} />Home</button></li>
+          <li className='toggle-item-2'><a className='btn btn-link btn-nav-mobile' href='/projects'><i className='bi bi-lightbulb' style={{ marginRight: '5px' }} />My Projects</a></li>
           <li className='toggle-item-3'><button className='btn btn-link btn-nav-mobile'><i className='bi bi-envelope' style={{ marginRight: '5px' }} />Inbox</button></li>
           {userState && <li className='toggle-item-4'><button className='btn btn-link btn-nav-mobile'><i className='bi bi-gear' style={{ marginRight: '5px' }} />{userState?.slice(0, 19)}</button></li>}
           <li className='toggle-item-4'><button className='btn btn-link btn-nav-mobile'><i className='bi bi-telephone' style={{ marginRight: '5px' }} />Contact us</button></li>
           {!userState ?
             <li className='toggle-item-5'><button className='btn btn-link' onClick={(e) => { dispatch(setCredentialsModalShow(true)); dispatch(setCredentialsModalView(1)) }}>Register|login</button></li>
-            : <li className='toggle-item-5'> <button className='btn btn-link' onClick={(e) => logOutUser()}>Sign out </button></li>
-          }
+            : <li className='toggle-item-5'> <button className='btn btn-link' onClick={(e) => logOutUser()}>Sign out </button></li>}
         </ul>
 
         <div className='wrap'>
