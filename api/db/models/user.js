@@ -4,7 +4,7 @@ const { Sequelize, DataTypes, Model } = require('sequelize')
 // const Project = require('./project')
 // const Rating = require('./rating')
 // path from seqalize root to db path
-const sequelize = new Sequelize({ dialect: 'sqlite', storage: './db/makit.db' })
+const sequelize = new Sequelize({ dialect: 'sqlite', storage: './db/makit.db', logging: false })
 // sequelize.query('PRAGMA journal_mode=WAL;')
 // add logging: false to paramterized constructor of sequalize to disable logging
 
@@ -48,6 +48,6 @@ User.init({
   modelName: 'User'
 })
 
-User.sync({ alter: true })
+User.sync({ alter: true }).catch(err => console.log(err))
 
 module.exports = User

@@ -15,12 +15,33 @@ import CredentialsModal from './features/credentialsModal/CredentialsModal'
 // import { Formik } from 'formik'
 import { useDispatch, useSelector, connect } from 'react-redux'
 import { setUserID, setUsername } from './features/credentialsModal/credentialsModalSlice'
+import { setProjects } from './features/views/myProjectsSlice'
 import MyProjects from './features/views/MyProjects'
+import CreateProject from './features/createProject/CreateProject'
+import { Feed } from './features/views/Feed'
 
 function App (props) {
+  axios.defaults.withCredentials = true
+  const { myProjects, userID, username } = props
   const dispatch = useDispatch()
 
   // TODO fetch projects here to be passed down as props
+  const fetchProjects = async () => {
+    await axios({
+      method: 'get',
+      url: '/api/project/get'
+    })
+      .then((response) => {
+        console.log('projects fetched responce', response)
+        if (response.data?.projects && response.data.projects.length !== 0) {
+          dispatch(setProjects(response.data.projects))
+        }
+      })
+      .catch((error) => {
+        // handle error
+        console.log(error)
+      })
+  }
 
   useEffect(() => {
     // fetch api whenever App attached to the DOM
@@ -42,7 +63,22 @@ function App (props) {
         // handle error
         console.log(error)
       })
-      // attach dispatch to sideeffect to rerender with ever any action is called
+
+    axios({
+      method: 'get',
+      url: '/api/project/get'
+    })
+      .then((response) => {
+        console.log('projects fetched responce', response)
+        if (response.data?.projects && response.data.projects.length !== 0) {
+          dispatch(setProjects(response.data.projects))
+        }
+      })
+      .catch((error) => {
+        // handle error
+        console.log(error)
+      })
+    // attach dispatch to sideeffect to rerender with ever any action is called
   }, [dispatch])
 
   // useselctor to get state
@@ -50,21 +86,22 @@ function App (props) {
 
   return (
     <div className='App' style={{ width: '100%', height: '100%' }}>
+      <Navbar />
+      <CredentialsModal />
       <Router forceRefresh>
-        <Navbar />
-        <CredentialsModal />
-
         <div className='container-fluid' style={{ marginTop: '115px' }}>
           <div className='row' style={{ display: 'flex', justifyContent: 'center' }}>
             {/* ============== Router Switch List ==================== */}
             <Switch>
               <Route path='/projects'>
-                <MyProjects />
+                {/* Multiple nested Require exact path matching for root path */}
+                <Route exact path='/projects'><MyProjects /></Route>
+                <Route path='/projects/create'><CreateProject /></Route>
               </Route>
               {/* <Switch> looks through its children <Route>s and
-                renders the first one that matches the current URL. Needs to be last or it will  */}
+                renders the first one that matches the current URL. / (index route) Needs to be last or it will not render  */}
               <Route path='/'>
-                Home
+                <Feed />
               </Route>
             </Switch>
 
@@ -76,7 +113,8 @@ function App (props) {
 }
 const mapStateToProps = (state) => ({
   userID: state.session.userID,
-  username: state.session.user
+  username: state.session.user,
+  myProjects: state.myProjects.projects
 })
 
 const mapDispatchToProps = {

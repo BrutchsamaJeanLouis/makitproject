@@ -44,6 +44,7 @@ export default function CredentialsModal (props) {
                       dispatch(setUsername(loginResponse.data.user.username))
                       dispatch(setUserID(loginResponse.data.user.id))
                       dispatch(setCredentialsModalShow(false))
+                      window.location.reload()
                     }
                     setSubmitting(false)
                     // setRegisterRes(response.data)

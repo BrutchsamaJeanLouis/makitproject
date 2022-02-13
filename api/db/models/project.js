@@ -6,7 +6,7 @@ const User = require('./user')
 // const Location = require('./location')
 // const Comment = require('./comment')
 // path from seqalize root to db path
-const sequelize = new Sequelize({ dialect: 'sqlite', storage: './db/makit.db' })
+const sequelize = new Sequelize({ dialect: 'sqlite', storage: './db/makit.db', logging: false })
 
 class Project extends Model {}
 
@@ -45,5 +45,5 @@ Project.init({
 Project.belongsTo(User, { foreignKey: 'userId' })
 // Project.hasOne(User)
 
-Project.sync({ alter: true })
+Project.sync({ alter: true }).catch(err => console.log(err))
 module.exports = Project

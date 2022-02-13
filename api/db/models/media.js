@@ -2,7 +2,7 @@ const { Sequelize, DataTypes, Model } = require('sequelize')
 const Project = require('./project')
 // const Project = require('./project')
 // path from seqalize root to db path
-const sequelize = new Sequelize({ dialect: 'sqlite', storage: './db/makit.db' })
+const sequelize = new Sequelize({ dialect: 'sqlite', storage: './db/makit.db', logging: false })
 
 class Media extends Model {}
 
@@ -40,5 +40,5 @@ Media.init({
 // Media.belongsTo(Project, { foreignKey: 'projectID' })
 Project.hasMany(Media, { foreignKey: 'projectId' })
 
-Media.sync({ alter: true })
+Media.sync({ alter: true }).catch(err => console.log(err))
 module.exports = Media

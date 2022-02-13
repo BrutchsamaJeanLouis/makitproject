@@ -4,7 +4,7 @@ const User = require('./user')
 // const Project = require('./project')
 // const User = require('./user')
 // path from seqalize root to db path
-const sequelize = new Sequelize({ dialect: 'sqlite', storage: './db/makit.db' })
+const sequelize = new Sequelize({ dialect: 'sqlite', storage: './db/makit.db', logging: false })
 
 class Fund extends Model {}
 
@@ -49,5 +49,5 @@ Fund.belongsTo(User, { foreignKey: 'userId' })
 // Fund.belongsTo(Project, { foreignKey: 'projectID' })
 Project.hasMany(Fund, { foreignKey: 'projectId' })
 
-Fund.sync({ alter: true })
+Fund.sync({ alter: true }).catch(err => console.log(err))
 module.exports = Fund

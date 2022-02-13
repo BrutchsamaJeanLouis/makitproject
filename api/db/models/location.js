@@ -1,7 +1,7 @@
 const { Sequelize, DataTypes, Model } = require('sequelize')
 const Project = require('./project')
 // path from seqalize root to db path
-const sequelize = new Sequelize({ dialect: 'sqlite', storage: './db/makit.db' })
+const sequelize = new Sequelize({ dialect: 'sqlite', storage: './db/makit.db', logging: false })
 
 class Location extends Model {}
 
@@ -47,5 +47,5 @@ Location.init({
 // Location.belongsTo(Project, { foreignKey: 'projectID' })
 Project.hasOne(Location, { foreignKey: 'projectId' })
 
-Location.sync({ alter: true })
+Location.sync({ alter: true }).catch(err => console.log(err))
 module.exports = Location

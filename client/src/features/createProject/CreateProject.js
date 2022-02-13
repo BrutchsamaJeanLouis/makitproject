@@ -1,23 +1,12 @@
+import axios from 'axios'
 import React, { useState } from 'react'
-import { Button, Overlay, OverlayTrigger, Popover } from 'react-bootstrap'
-import './Projectcard.css'
+import './CreateProject.css'
 
-const optionsPopover = (props) => {
-  return (
-    <Popover key={2049539} className='pop' id='popover-basic'>
-      <Popover.Header as='h3'>Popover right</Popover.Header>
-      <Popover.Body>
-        And here's some <strong>amazing</strong> content. It's very engaging.
-        right?
-      </Popover.Body>
-    </Popover>
-  )
-}
-
-export default function Projectcard (props) {
-  const [showOptions, setShowOptions] = useState(false)
-  const { project, editable } = props
-  const { Rating, Location, Media, Funds, User, Comments } = project
+export default function CreateProject (props) {
+  // const project = props.project
+  // const { Rating, Location, Media, Funds } = project
+  const [projectName, setProjectName] = useState()
+  const [projectDescription, setProjectDescription] = useState()
 
   const exampleProjectData = {
     id: 1,
@@ -71,30 +60,30 @@ export default function Projectcard (props) {
     ]
   }
 
+  const postProject = () => {
+    axios.post('/api/project/create', { name: projectName, description: projectDescription })
+      .then(res => {
+        console.log(res)
+      })
+      .catch(err => console.log(err))
+  }
   return (
-    <div className='col-md-3' style={{ margin: '10px', minWidth: '300px' }}>
+    <div className='col-md-12' style={{ margin: '10px', minWidth: '300px', paddingBottom: '40px' }}>
       <div className='card mb-3'>
-        <h5 className='card-header'>
-          <div className='user-circle-post' style={{ color: 'white' }}>{User.username.charAt(0).toUpperCase()}</div>
-          <div className='post-user' style={{ display: 'inline-block' }}>
-            {User.username}
-            <p style={{ fontSize: '0.7em' }}>{project.createdAt}</p>
-          </div>
-          {editable &&
-            <div className='float-end' style={{ cursor: 'pointer' }}>
-              <i class='bi bi-three-dots-vertical' />
-            </div>}
-        </h5>
+        <span className='text-center'><h5>Create New Post</h5></span>
+        <div class='input-group input-group-lg'>
+          <span class='input-group-text' id='inputGroup-sizing-lg'>Title</span>
+          <input type='text' class='form-control' value={projectName} onChange={(e) => setProjectName(e.target.value)} />
+        </div>
         <div className='card-body' style={{ borderTopRightRadius: '50px' }}>
-          <h5 className='card-title'>{project.name}</h5>
-          <p className='card-text'>{project.description}</p>
-          <button href='#' className='btn btn-secondary'>Learn more</button>
+          <textarea class='form-control' id='exampleFormControlTextarea1' rows='3' value={projectDescription} onChange={(e) => setProjectDescription(e.target.value)} />
         </div>
         <div className='card-footer'>
           <div className='float-end'>
-            <i className='bi bi-chat-left-dots' style={{ fontSize: '20px', marginRight: '10px', cursor: 'pointer' }} />
-            <i className='bi bi-hand-thumbs-up' style={{ fontSize: '20px', marginRight: '10px', cursor: 'pointer' }} />
-            <i className='bi bi-hand-thumbs-down' style={{ fontSize: '20px', marginRight: '10px', cursor: 'pointer' }} />
+            <button type='button' class='btn btn-secondary'>
+              <i class='bi bi-paperclip' />
+              Add attachment
+            </button>
           </div>
         </div>
         <div className='card-footer'>
@@ -104,13 +93,13 @@ export default function Projectcard (props) {
             </span> */}
 
           <div className='input-group mb-3'>
-            <input type='text' placeholder='comment' className='form-control form-control-lg' />
             <div className='input-group-prepend' style={{ alignItems: 'center', display: 'flex' }}>
-              <button className='btn btn-primary' type='button' style={{ marginLeft: '10px' }}>Post</button>
+              <button className='btn btn-primary' type='button' style={{ marginLeft: '10px' }} onClick={() => postProject()}>Publish</button>
             </div>
           </div>
         </div>
       </div>
+      <hr />
     </div>
   )
 }

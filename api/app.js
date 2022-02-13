@@ -6,6 +6,9 @@ const bodyParser = require('body-parser')
 const logger = require('morgan')
 const cors = require('cors')
 const session = require('express-session')
+const sqlite3 = require('sqlite3')
+const sqliteStoreFactory = require('express-session-sqlite').default
+const SqliteStore = sqliteStoreFactory(session)
 const flash = require('connect-flash')
 const passport = require('passport')
 const { Strategy: LocalStrategy } = require('passport-local')
@@ -13,24 +16,13 @@ const bcrypt = require('bcrypt')
 
 // Init Models
 const User = require('./db/models/user')
-
-const Project = require('./db/models/project')
-Project.afterSync('commentSync', () => console.log('Table projects successfully synced with sequelize'))
-
-const Location = require('./db/models/location')
-Location.afterSync('commentSync', () => console.log('Table locations successfully synced with sequelize'))
-
-const Rating = require('./db/models/rating')
-Rating.afterSync('commentSync', () => console.log('Table ratings successfully synced with sequelize'))
-
-const Fund = require('./db/models/fund')
-Fund.afterSync('commentSync', () => console.log('Table funds successfully synced with sequelize'))
-
-const Media = require('./db/models/media')
-Media.afterSync('commentSync', () => console.log('Table media successfully synced with sequelize'))
-
-const Comment = require('./db/models/comment')
-Comment.afterSync('commentSync', () => console.log('Table comments successfully synced with sequelize'))
+User.sync() // const used for authentication
+require('./db/models/project').sync()
+require('./db/models/location').sync()
+require('./db/models/rating').sync()
+require('./db/models/fund').sync()
+require('./db/models/media').sync()
+require('./db/models/comment').sync()
 // Example users password: pwd
 
 /* --------------------------------------------------------------------
@@ -119,8 +111,8 @@ const app = express()
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'))
-// app.set('view engine', 'ejs');
-app.set('view engine', 'jade')
+app.set('view engine', 'ejs')
+// app.set('view engine', 'jade')
 
 // to allow Resposce from other cross origins like another localHost
 // Disable ths on production for security reasons add middleWare to accept only valid connections
@@ -131,7 +123,22 @@ app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
-app.use(session({ secret: 'sessionSecreat', resave: true, saveUninitialized: true })) // session secret
+app.use(session({
+  store: new SqliteStore({
+    driver: sqlite3.Database,
+    path: path.join(__dirname, 'db/makit.db'),
+    // Session TTL in milliseconds
+    ttl: 14400000, // 4hr
+    // (optional) Session id prefix. Default is no prefix.
+    // prefix: 'sess:',
+    // (optional) Adjusts the cleanup timer in milliseconds for deleting expired session rows.
+    cleanupInterval: 60000 // 60 seconds
+  }),
+  name: 'makit',
+  secret: 'googleWorldGlobal',
+  resave: true,
+  saveUninitialized: false
+}))
 app.use(flash())
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(passport.initialize())
@@ -144,15 +151,16 @@ app.use(passport.session())
 --------------------------------------------------------------------- */
 app.use('/index', indexRouter)
 app.use('/user', usersRouter)
-app.use('/projects', projectRouter)
+app.use('/api/project', projectRouter)
 
 /* --------------------------------------------------------------------
 |
 |                    API
 |
 --------------------------------------------------------------------- */
-app.get('/app', isLoggedIn, (req, res) => {
+app.get('/app', (req, res) => {
   console.log('req user', req.user)
+  const user = req?.session?.passport?.user
   // TODO fix associations
   // Project.findAll({
   //   where: { userID: req.user.id },
@@ -160,12 +168,23 @@ app.get('/app', isLoggedIn, (req, res) => {
   //     { model: Rating }, { model: Location }, { model: Media }, { model: Fund }
   //   ]
   // })
-    // .then((userResponce) => {
-      res.json({ user: req.user, projects: [] })
-    // })
+  // .then((userResponce) => {
+  res.json({ user: req.user, projects: [] })
+  // })
 })
 
-app.post('/login', passport.authenticate('local', { successRedirect: '/app', failureRedirect: '/login', failureMessage: 'username or password incorrect' }))
+// app.post('/login', passport.authenticate('local', { successRedirect: '/app', failureRedirect: '/login', failureMessage: 'username or password incorrect' }))
+app.post('/login', (req, res, next) => {
+  passport.authenticate('local', (err, user, info) => {
+    console.log(`req.user: ${JSON.stringify(req.user)}`)
+    req.login(user, (err) => {
+      console.log('Inside req.login() callback')
+      console.log(`req.session.passport: ${JSON.stringify(req.session.passport)}`)
+      console.log(`req.user: ${JSON.stringify(req.user)}`)
+      res.redirect('/app')
+    })
+  })(req, res, next)
+})
 
 app.get('/login', (req, res, next) => {
   if (!req.user) {
